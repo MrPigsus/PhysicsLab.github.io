@@ -1,0 +1,14 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(44, 116, 138);
+    margin-top: 50px;
+    text-align: center;
+    background-image: url('assets/projectPhoto.jpg'); /* Путь к вашей картинке */
+    background-repeat: no-repeat;  /* Отменяет размножение картинки */
+    background-size: cover;        /* Растягивает картинку на весь экран */
+    background-position: center;   /* Центрирует изображение */
+    background-attachment: fixed;  /* Фиксирует фон при прокрутке */
+}
+main{
+    margin-top: 100px;
+}   
