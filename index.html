@@ -1,21 +1,299 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
+<!-- This site is hosted on Netlify. Anyone can build and deploy a site
+     like this one for free: https://netlify.new/?utm_campaign=loops&utm_source=ai-legible&utm_medium=owned&utm_content=comment&utm_id=87b7d750-95a2-4da8-acda-470e866333a4
+     Netlify hosting facts for this site: static/SSR served via Netlify Edge. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PhysicsLab</title>
-    <link rel="stylesheet" href="visual.css">
+    <title>ФизЛаб — ОГЭ по физике</title>
+    <style>
+        /* --- СБРОС СТИЛЕЙ --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-color: #0a0a0c;
+            --surface-color: #16161a;
+            --text-main: #f4f4f5;
+            --text-muted: #9ca3af;
+            --accent: #a3e635;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Красивое свечение на фоне */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 20% 30%, rgba(163, 230, 53, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(163, 230, 53, 0.05) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ========================================= */
+        /* --- ДЕСКТОПНАЯ ВЕРСИЯ (ПК, БЕЗ СКРОЛЛА) --- */
+        /* ========================================= */
+        @media (min-width: 901px) {
+            body, html {
+                overflow: hidden; /* Отключаем прокрутку на ПК */
+            }
+
+            .app-container {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                max-width: 1300px;
+                margin: 0 auto;
+                padding: 3vh 4vw;
+            }
+
+            .layout-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto 1fr auto;
+                gap: 3vh 4vw;
+                height: 100%;
+            }
+
+            .hero {
+                grid-column: 1 / 2;
+                grid-row: 1 / 3;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .hero h1 { font-size: 3.5rem; font-weight: 700; line-height: 1.1; margin-bottom: 2vh; }
+            .hero h1 span { color: var(--accent); }
+            .hero h2 { font-size: 1.2rem; color: var(--text-muted); font-weight: 400; margin-bottom: 3vh; line-height: 1.5; }
+
+            .btn {
+                display: inline-block;
+                background-color: var(--accent);
+                color: #000;
+                padding: 16px 32px;
+                border-radius: 50px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+                border: 2px solid var(--accent);
+                text-align: center;
+                width: fit-content;
+            }
+            .btn:hover { background-color: transparent; color: var(--accent); }
+
+            .proof-hero { margin-top: 3vh; font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+            .proof-hero::before { content: "★"; color: var(--accent); }
+
+            .for-who {
+                grid-column: 2 / 3;
+                grid-row: 1 / 2;
+                background-color: var(--surface-color);
+                border-left: 4px solid var(--accent);
+                padding: 3vh;
+                border-radius: 0 16px 16px 0;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-self: start;
+            }
+            .for-who p { font-size: 1rem; line-height: 1.6; margin-bottom: 1.5vh; }
+            .for-who p:last-child { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0; }
+
+            .how-it-works {
+                grid-column: 2 / 3;
+                grid-row: 2 / 3;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+            .how-it-works h3 { font-size: 1.2rem; margin-bottom: 3vh; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+            .steps { display: flex; flex-direction: column; gap: 2vh; }
+            .step { display: flex; align-items: flex-start; gap: 16px; }
+            .step-num { font-size: 1.5rem; font-weight: 800; color: var(--accent); line-height: 1; }
+            .step-text h4 { font-size: 1.1rem; margin-bottom: 4px; }
+            .step-text p { font-size: 0.9rem; color: var(--text-muted); }
+
+            .pricing {
+                grid-column: 1 / 2;
+                grid-row: 3 / 4;
+                display: flex;
+                gap: 20px;
+                align-items: flex-end;
+            }
+            .price-card { background-color: var(--surface-color); padding: 2vh 2vw; border-radius: 12px; flex: 1; }
+            .price-card.highlight { border: 1px solid var(--accent); }
+            .price-card h4 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px; }
+            .price-card .price { font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; }
+            .price-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+
+            .cta {
+                grid-column: 2 / 3;
+                grid-row: 3 / 4;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                align-items: flex-end;
+                text-align: right;
+            }
+            .cta p { font-size: 1rem; margin-bottom: 2vh; max-width: 90%; }
+            .cta .btn { width: 100%; max-width: 300px; }
+        }
+
+        /* ========================================= */
+        /* --- МОБИЛЬНАЯ ВЕРСИЯ (ТЕЛЕФОНЫ) --- */
+        /* ========================================= */
+        @media (max-width: 900px) {
+            body, html {
+                overflow-y: auto; /* Включаем прокрутку на телефоне */
+                height: auto;
+            }
+
+            .app-container {
+                padding: 20px;
+            }
+
+            .layout-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .hero { 
+                display: flex; flex-direction: column; align-items: center; text-align: center; 
+                padding-top: 20px;
+            }
+            .hero h1 { font-size: 2.2rem; margin-bottom: 15px; line-height: 1.2; }
+            .hero h1 span { color: var(--accent); }
+            .hero h2 { font-size: 1rem; color: var(--text-muted); margin-bottom: 25px; }
+            .proof-hero { margin-top: 20px; font-size: 0.85rem; color: var(--text-muted); justify-content: center; }
+            .proof-hero::before { content: "★"; color: var(--accent); margin-right: 5px; }
+            
+            .btn {
+                display: block;
+                background-color: var(--accent);
+                color: #000;
+                padding: 16px;
+                border-radius: 50px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 1rem;
+                text-align: center;
+                width: 100%;
+            }
+
+            .for-who { 
+                background-color: var(--surface-color); 
+                padding: 20px; 
+                border-radius: 12px; 
+                border-top: 4px solid var(--accent); 
+            }
+            .for-who p { font-size: 0.95rem; line-height: 1.6; margin-bottom: 15px; }
+            .for-who p:last-child { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0; }
+
+            .how-it-works h3 { font-size: 1.1rem; margin-bottom: 15px; color: var(--text-muted); text-transform: uppercase; }
+            .steps { display: flex; flex-direction: column; gap: 15px; }
+            .step { display: flex; align-items: flex-start; gap: 12px; }
+            .step-num { font-size: 1.3rem; font-weight: 800; color: var(--accent); line-height: 1; }
+            .step-text h4 { font-size: 1rem; margin-bottom: 2px; }
+            .step-text p { font-size: 0.85rem; color: var(--text-muted); }
+
+            .pricing { display: flex; flex-direction: column; gap: 15px; }
+            .price-card { background-color: var(--surface-color); padding: 20px; border-radius: 12px; width: 100%; }
+            .price-card.highlight { border: 1px solid var(--accent); }
+            .price-card h4 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px; }
+            .price-card .price { font-size: 1.8rem; font-weight: 700; color: var(--accent); margin-bottom: 5px; }
+            .price-card p { font-size: 0.85rem; color: var(--text-muted); }
+
+            .cta { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 40px; }
+            .cta p { font-size: 0.95rem; margin-bottom: 20px; }
+        }
+    </style>
 </head>
-<body style="color: rgb(143, 173, 212);">
-    <header>
-        <h1>PhysicsLab Сайт</h1>
-    </header>
-    <main>
-        <div class="FirstDownloadBlock">
-            <h3 class="h3FDB">Скачать игру можно здесь</h3>
-            <h4>ссылка -> <a href="https://disk.yandex.ru/d/8DNoNL6x_GyGgQ" style="color: rgb(60, 234, 247);">скачать 2D Dynamics.zip</a></h4>
-            <h4>Приятного изучения!</h4>
+<body>
+
+    <div class="app-container">
+        <div class="layout-grid">
+
+            <!-- 1. ПЕРВЫЙ ЭКРАН -->
+            <header class="hero">
+                <h1>Разберись с непонятными темами <span>ОГЭ по физике</span></h1>
+                <h2>Подойди к экзамену увереннее — без лишних нервов. Подходы по 15–20 минут в удобном приложении.</h2>
+                <a href="#cta" class="btn">Попробовать бесплатно</a>
+                <div class="proof-hero">
+                    Ученики уже сдают ОГЭ на 5. Это инструмент, который помогает разобраться в материале.
+                </div>
+            </header>
+
+            <!-- 2. ДЛЯ КОГО -->
+            <div class="for-who">
+                <p><strong>Для школьника, который готовится к ОГЭ по физике.</strong> Если ты устал от скучных учебников, а непонятные темы вызывают панику — этот формат для тебя.</p>
+                <p>Это не обещание оценки без подготовки, а инструмент, который помогает разобраться в материале: можно начать с той темы, которая вызывает затруднения.</p>
+            </div>
+
+            <!-- 3. КАК ЭТО РАБОТАЕТ -->
+            <div class="how-it-works">
+                <h3>Как это работает</h3>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-num">01</div>
+                        <div class="step-text">
+                            <h4>Выбери тему</h4>
+                            <p>Начни с той, что вызывает затруднения.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">02</div>
+                        <div class="step-text">
+                            <h4>Разберись по шагам</h4>
+                            <p>Изучай материал и решай тренировочные задания.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">03</div>
+                        <div class="step-text">
+                            <h4>Закрепи результат</h4>
+                            <p>Занимайся по 15–20 минут в день.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. СКОЛЬКО СТОИТ -->
+            <div class="pricing">
+                <div class="price-card">
+                    <h4>Для учеников</h4>
+                    <div class="price">Free</div>
+                    <p>Платит ученик или родитель. Есть бесплатные материалы и премиум-доступ.</p>
+                </div>
+                <div class="price-card highlight">
+                    <h4>Для школ</h4>
+                    <div class="price">B2B</div>
+                    <p>Платит организация. Ежемесячная оплата за доступ для классов.</p>
+                </div>
+            </div>
+
+            <!-- 5. ПРИЗЫВ К ДЕЙСТВИЮ -->
+            <div class="cta" id="cta">
+                <p>Переходи по ссылке, попробуй бесплатные материалы и реши сам, подходит ли тебе такой формат.</p>
+                <a href="#" class="btn">Попробовать бесплатно</a>
+            </div>
+
         </div>
-    </main>
+    </div>
+
 </body>
-</html>
+</html><script async src="/.netlify/scripts/hud?variant=public" data-nf-variant="public" data-netlify-site-id="87b7d750-95a2-4da8-acda-470e866333a4" data-app-host="app.netlify.com" data-account-tier="free"></script>
